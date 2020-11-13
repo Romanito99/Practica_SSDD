@@ -12,7 +12,7 @@ module IceGauntle  {
 
     interface Server {
         string getRoom() thorws RoomAlreadyExists;
-        void Publish(string token, string roomData) 
+        void Publish(string token, string roomData);
         void Remove(string token , string roomName)  trhows RoomNotExists;
     }
 
