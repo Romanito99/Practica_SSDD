@@ -6,7 +6,7 @@ module IceGauntle  {
     interface AuthSever {
         bool isValid (string token) thorws Unauthorized; 
         string getNewToken (string user , string passHash) throws Unauthorized;
-        void changePassword(string user , string currentPassHash, string newPassHash) trhows Unauthorized
+        void changePassword(string user , string currentPassHash, string newPassHash) trhows Unauthorized;
 
     };
 
