@@ -1,5 +1,5 @@
 module IceGauntle  {
-    exception Unauthorized{string error};
+    exception Unauthorized{ stringerror};
     exception RoomAlreadyExists{string error};
     exception RoomNotExists{string error}; 
 
