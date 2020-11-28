@@ -37,11 +37,17 @@ class ClientAuth(Ice.Application):
         try:
             with open("users.json") as f:
                 datos_usuario=f.read()
+                
             datos_usuario=json.loads(datos_usuario)
+            
         except:
             print("No se ha podido leer el fichero json de busqueda")
 
         else:
+            user = self.solicitarUsuario()
+            new_hash = self.solicitarContraseña()
+            nombre_usuario=datos_usuario[user]
+
             if(len(nombre_usuario)==0):
                 
                 authserver.changePassword(user, None ,new_hash)
@@ -55,4 +61,3 @@ class ClientAuth(Ice.Application):
  
 
 ClientAuth().main(sys.argv)
- 
