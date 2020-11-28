@@ -1,9 +1,10 @@
-module IceGauntle  {
-    exception Unauthorized{string error};
-    exception RoomAlreadyExists{string error};
-    exception RoomNotExists{string error}; 
+module IceGauntlet  {
+    exception Unauthorized{ string error;};
+    exception RoomAlreadyExists{string error;};
+    exception RoomNotExists{string error;}; 
 
-    interface AuthSever {
+
+    interface Authentication{ 
         bool isValid (string token) throws Unauthorized; 
         string getNewToken (string user , string passHash) throws Unauthorized;
         void changePassword(string user , string currentPassHash, string newPassHash) throws Unauthorized;
