@@ -12,7 +12,7 @@ class ServerI(icegauntlet.AuthServer):
             print ("Error al comprobar {}".format(error))
             raise IceGauntlet.Unauthorized(str(error))
     def Publish(self , token , roomData , current=None):
-     
+        
     
     def Remove(self , token , roomName , current=None): 
         try: 
