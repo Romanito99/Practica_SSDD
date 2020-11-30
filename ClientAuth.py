@@ -13,16 +13,26 @@ class ClientAuth(Ice.Application):
         fileHash.update(filename.encode())
         return fileHash.hexdigest()
 
-    def solicitarContraseña(self):
-        print("Introduzca una new_hash para el usuario")
+    def solicitarNuevaContraseña(self):
+        print("Introduzca su nueva contraseña  para el usuario")
         new_hash = getpass.getpass("Contraseña>")
         new_hash= self.computeHash(new_hash)
         return new_hash
+    def solicitarContraseña(self):
+        print("Introduzca su  contraseña. Si es un usuario vacio no escriba nada  ")
+        hash = getpass.getpass("Contraseña>")
+        hash= self.computeHash(new_hash)
+        return hash
 
     def solicitarUsuario(self):
         print("Escriba el nombre del usuario")
         user = str(input("Usuario>"))
         return user
+        
+    def elegirOpcion(self):
+        print("Que quiere hacer:\n1.Cambiar tu contraseña\n 2. Obtener un nuevo token ")
+        op= int(input("Elija un numero>"))
+        return op
         
     def run(self, argv):
         broker=self.communicator()
@@ -34,6 +44,7 @@ class ClientAuth(Ice.Application):
 
         if not authserver:
             raise RunTimeError('Invalid Proxy')
+        
         try:
             with open("users.json") as f:
                 datos_usuario=f.read()
@@ -45,19 +56,32 @@ class ClientAuth(Ice.Application):
 
         else:
             user = self.solicitarUsuario()
-            new_hash = self.solicitarContraseña()
-            nombre_usuario=datos_usuario[user]
 
+            nombre_usuario = datos_usuario[user]       
             if(len(nombre_usuario)==0):
-                
-                authserver.changePassword(user, None ,new_hash)
-            else:   
-                current_hash = nombre_usuario["password_hash"]
-                authserver.changePassword(user, current_hash ,new_hash)
-                
+                print("")
+                new_hash = self.solicitarNuevaContraseña()
+                authserver.changePassword(user , None ,new_hash)
+            else:
+                hash = self.solicitarContraseña()
+                current_hash = nombre_usuario["password_hash\n "]
+                opcion = self.elegirOpcion
+                if current_hash == hash  :
+                print("Usuario correcto\n ")
+                    if opcion == 1:
+                    new_hash = self.solicitarNuevaContraseña()
+                    authserver.changePassword(user, current_hash ,new_hash)
+                    elif opcion == 2:
+                        token=authserver.getNewToken(user,current_hash)
+                    else 
+                    print("El usuario introducizo no existe o su contraseña es incorerecta\n ")
 
        
-        authserver.getNewToken("cesar.braojos",new_hash)
- 
+            print("El  nuevo token es: ",token)
+            
+           
+                                
+           
+
 
 ClientAuth().main(sys.argv)

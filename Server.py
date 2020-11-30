@@ -8,6 +8,23 @@ import IceGauntlet
 
 class ServerI(IceGauntlet.Server):
     '''Clase ServerI'''
+
+    def publish(self , token , roomData , current=None):
+        ''' hola '''
+        fichero={}
+        fichero=(roomData)
+        print(fichero["room"])
+        with open('tutorial.json','w') as f:
+            json.dump(fichero, f)
+        with open("mapas.json") as f2:
+            c=f2.read()
+        datos_usuario=json.loads(c)
+        datos_usuario[fichero["room"]]={}
+        datos_usuario[fichero["room"]]["current_token"]=token
+        
+        with open('mapas.json', 'w') as contents:
+            json.dump(datos_usuario, contents, indent=2, sort_keys=True)
+        
     def getRoom(self,argv):
         '''Este metodo es para obtener un mapa'''
         try :
@@ -18,20 +35,22 @@ class ServerI(IceGauntlet.Server):
             except:
                 print("No se ha podido leer el fichero json de busqueda")
             else:
-                room_data = (datos_usuario["data"][1])   
+                room_data = (datos_usuario) 
+                self.publish(1,datos_usuario) 
+                
+ 
 
+                
+               
+                
         except Exception as error:
             print ("Error al comprobar {}".format(error))
-            raise IceGauntlet.Unauthorized(str(error))
-
-    def publish(self , token , roomData , current=None):
-        ''' hola '''
-        print("toy echo un puto")
-
+            raise IceGauntlet.Unauthorized(str(error)
     def remove(self , token , roomName , current=None): 
         '''hola'''
         try: 
-            print("estoy echo otro puto")
+            os.remove('problema.json')
+
         except Exception as error:
             print ("Error al comprobar {}".format(error))
             raise IceGauntlet.Unauthorized(str(error))
