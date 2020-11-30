@@ -6,7 +6,7 @@ import IceGauntlet
 
 
 class ClientRoom(Ice.Application): 
-
+  
     def elegirOpcion(self):
         print("Que quiere hacer:\n1.Publicar\n 2.Remover ")
         op= int(input("Elija un numero>"))
@@ -43,4 +43,5 @@ class ClientRoom(Ice.Application):
         
 
         
+
        
