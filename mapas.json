@@ -1,7 +1,8 @@
 {
-  "a": {},
-  "c": {},
+  "mi_mapa": {
+    "current_token": 2
+  },
   "test room": {
-    "current_token": 1
+    "current_token": 2
   }
 }
