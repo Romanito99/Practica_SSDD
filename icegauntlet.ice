@@ -11,7 +11,7 @@ module IceGauntlet  {
 
     };
 
-    interface Server {
+    interface Server{
         string getRoom() throws RoomAlreadyExists;
         void Publish(string token, string roomData);
         void Remove(string token , string roomName)  throws RoomNotExists;

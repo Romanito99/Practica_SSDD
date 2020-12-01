@@ -74,6 +74,8 @@ class ClientAuth(Ice.Application):
                     elif opcion == 2:
                         #token=authserver.getNewToken(user,current_hash)
                         print("hola")
+                    elif opcion == 0: 
+                        print(nombre_usuario["current_token"])
                 else:
                     print("El usuario introducizo no existe o su contraseña es incorerecta\n ")
 
