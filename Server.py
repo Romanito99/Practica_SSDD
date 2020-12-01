@@ -33,10 +33,11 @@ class ServerI(IceGauntlet.Server):
                     datos_usuario=f.read()
                 datos_usuario=json.loads(datos_usuario)
                 for i in datos_usuario:
-                    
-                    if(datos_usuario== roomName):
-                        print("entra aqui")
-                        if(int(atos_usuario["current_token"])==token):
+                    print(i,roomName)
+                    if(i == roomName):
+                        print("entra aqui",datos_usuario[i]["current_token"])
+                        if((datos_usuario[i]["current_token"])==token):
+                            print("tambien aqui")
                             os.remove('juan.json')
         except Exception as error:
             print ("Error al comprobar {}".format(error))
@@ -49,7 +50,7 @@ class ServerI(IceGauntlet.Server):
         '''Este metodo es para obtener un mapa'''
         try :
             try:
-                with open("juego/assets/level_2.json") as f:
+                with open("juan.json") as f:
                     datos_usuario=f.read()
                 datos_usuario=json.loads(datos_usuario)
             except:
