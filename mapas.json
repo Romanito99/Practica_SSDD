@@ -1,18 +1,14 @@
 {
   "fichero.json": {
-    "current_token": "1",
+    "current_token": "4",
     "room": "test room"
   },
-  "mi_mapa": {
-    "current_token": 2
-  },
   "mi_mapa2": {
-    "current_token": 2
-  },
-  "test room": {
-    "current_token": 2
+    "current_token": 2,
+    "room": "test roomll"
   },
   "test room2": {
-    "current_token": 2
+    "current_token": 2,
+    "room": "test roomj"
   }
 }

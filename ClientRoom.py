@@ -37,7 +37,18 @@ class ClientRoom(Ice.Application):
                 print("llega aqui")
                 server.Publish(str(token),str(datos_usuario))
         elif option == 2:
-            server.Remove(token,roomData)
+            print("llego aqui")
+            try:
+                with open(roomData) as f:
+                    datos_usuario=f.read()
+                datos_usuario=json.loads(datos_usuario)
+            except:
+                print("No se ha podido leer el fichero json de busqueda")
+            else:
+                print("y aqui")
+                roomData=datos_usuario["room"]
+                print(roomData)
+                server.Remove(str(token),str(roomData))
 
         
 
