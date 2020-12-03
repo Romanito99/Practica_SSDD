@@ -35,7 +35,7 @@ class ClientRoom(Ice.Application):
                 print("No se ha podido leer el fichero json de busqueda")
             else:
                 print("llega aqui")
-                server.Publish(str(token),str(datos_usuario))
+                server.publish(str(token),str(datos_usuario))
         elif option == 2:
             print("llego aqui")
             try:
@@ -48,8 +48,8 @@ class ClientRoom(Ice.Application):
                 print("y aqui")
                 roomData=datos_usuario["room"]
                 print(roomData)
-                server.Remove(str(token),str(roomData))
-
+                server.remove(str(token),str(roomData))
+                
         
 
         
