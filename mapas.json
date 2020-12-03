@@ -7,6 +7,9 @@
     "current_token": 2,
     "room": "test roomll"
   },
+  "test room": {
+    "current_token": "4"
+  },
   "test room2": {
     "current_token": 2,
     "room": "test roomj"
