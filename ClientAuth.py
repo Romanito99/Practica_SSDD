@@ -14,14 +14,14 @@ class ClientAuth(Ice.Application):
         return fileHash.hexdigest()
 
     def solicitarNuevaContraseña(self):
-        print("Introduzca su nueva contraseña  para el usuario")
-        new_hash = getpass.getpass("Contraseña>")
+        print("Enter password")
+        new_hash = getpass.getpass("Enter password>")
         new_hash= self.computeHash(new_hash)
         return new_hash
 
     def solicitarContraseña(self):
-        print("Introduzca su  contraseña")
-        hash = getpass.getpass("Contraseña>")
+        print("Enter password")
+        hash = getpass.getpass("Enter password>")
         hash= self.computeHash(hash)
         return hash
 
@@ -39,7 +39,8 @@ class ClientAuth(Ice.Application):
         broker=self.communicator()
         proxy_authserver=broker.stringToProxy(argv[1])
         authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy_authserver)
-
+        user=argv[2]
+        opcion= argv[3]
         
         #authserver.getNewToken("cesar.braojos",new_hash)
 
@@ -54,7 +55,7 @@ class ClientAuth(Ice.Application):
             print("No se ha podido leer el fichero json de busqueda")
 
         else:
-            user = self.solicitarUsuario()
+            user = argv[2]
             nombre_usuario = datos_usuario[user]       
             if(len(nombre_usuario)==0):
                 new_hash = self.solicitarNuevaContraseña()
@@ -64,30 +65,19 @@ class ClientAuth(Ice.Application):
             else:
                 hash = self.solicitarContraseña()
                 current_hash = nombre_usuario["password_hash"]
-                print(isinstance(hash,str))
-                opcion = self.elegirOpcion
                 if current_hash == hash  :
                     print("Usuario correcto\n ")
-                    opcion = self.elegirOpcion()
-                    if opcion == 1:
+                    if opcion == "1":
                         new_hash = self.solicitarNuevaContraseña()
                         authserver.changePassword(user, current_hash ,new_hash)
                         print('"{}"'.format(nombre_usuario["current_token"]), flush=True)
-                    elif opcion == 2:
+                    elif opcion == "2":
                         token=authserver.getNewToken(user,current_hash)
-                        print('"{}"'.format(nombre_usuario["current_token"]), flush=True)
-                    elif opcion == 0: 
-                        print('"{}"'.format(nombre_usuario["current_token"]), flush=True)
+
+                        print('"{}"'.format(token), flush=True)
+                    
                 else:
                     print("El usuario introducizo no existe o su contraseña es incorerecta\n ")
-
-       
-            
-            
-           
-                                
-                
-            
 
 ClientAuth().main(sys.argv)
  
