@@ -11,9 +11,10 @@ import atexit
 import logging
 import argparse
 import Ice
+import ast
 Ice.loadSlice('icegauntlet.ice')
 import IceGauntlet
-
+import json
 import game
 import game.common
 import game.screens
@@ -37,15 +38,16 @@ class DungeonMapDistribuido():
     def __init__(self ):
         communicator = Ice.initialize(sys.argv)
         dungeon_proxy=communicator.stringToProxy(sys.argv[1])
-        dungeon=IceGauntlet.DungeonPrx.checkedCast(dungeon_proxy)
+        self.dungeon=IceGauntlet.DungeonPrx.checkedCast(dungeon_proxy)
 
     @property
     def next_room(self):
         #este esta por hacer
-        '''fichero=dungeon.getRoom()
+        fichero = self.dungeon.getRoom()
         fichero=ast.literal_eval(fichero)
         with open(("tutorial.json"),"w") as fichero_mapas:
-            json.dump(fichero, fichero_mapas)'''
+            json.dump(fichero, fichero_mapas)
+            
         return 'tutorial.json'
             
 

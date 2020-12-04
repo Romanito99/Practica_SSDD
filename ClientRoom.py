@@ -15,11 +15,11 @@ class ClientRoom(Ice.Application):
 
     def run (self,argv):
         broker=self.communicator()
-        proxy_server = broker.stringToProxy(argv[1])
-        server = IceGauntlet.ServerPrx.checkedCast(proxy_server)
+        proxy_RoomManager = broker.stringToProxy(argv[1])
+        RoomManager = IceGauntlet.RoomManagerPrx.checkedCast(proxy_RoomManager)
         token = argv[2]
         roomData = str(argv[3])
-        if not server:
+        if not RoomManager:
             raise RuntimeError('Invalid Proxy')
         
         option = self.elegirOpcion()
@@ -35,7 +35,7 @@ class ClientRoom(Ice.Application):
                 print("No se ha podido leer el fichero json de busqueda")
             else:
                 print("llega aqui")
-                server.publish(str(token),str(datos_usuario))
+                RoomManager.publish(str(token),str(datos_usuario))
         elif option == 2:
             print("llego aqui")
             try:
@@ -48,7 +48,7 @@ class ClientRoom(Ice.Application):
                 print("y aqui")
                 roomData=datos_usuario["room"]
                 print(roomData)
-                server.remove(str(token),str(roomData))
+                RoomManager.remove(str(token),str(roomData))
                 
         
 

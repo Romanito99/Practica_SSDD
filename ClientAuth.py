@@ -20,7 +20,7 @@ class ClientAuth(Ice.Application):
         return new_hash
 
     def solicitarContraseña(self):
-        print("Introduzca su  contraseña. Si es un usuario vacio no escriba nada  ")
+        print("Introduzca su  contraseña")
         hash = getpass.getpass("Contraseña>")
         hash= self.computeHash(hash)
         return hash
@@ -31,7 +31,7 @@ class ClientAuth(Ice.Application):
         return user
         
     def elegirOpcion(self):
-        print("Que quiere hacer:\n1.Cambiar tu contraseña\n 2. Obtener un nuevo token ")
+        print("Que quiere hacer:\n0.Autenticarse\n1.Cambiar tu contraseña\n 2. Obtener un nuevo token ")
         op= int(input("Elija un numero>"))
         return op
         
@@ -57,9 +57,10 @@ class ClientAuth(Ice.Application):
             user = self.solicitarUsuario()
             nombre_usuario = datos_usuario[user]       
             if(len(nombre_usuario)==0):
-                print("")
                 new_hash = self.solicitarNuevaContraseña()
-                authserver.changePassword(user ,None,new_hash)
+                authserver.changePassword(str(user),None,str(new_hash))
+                print('"{}"'.format(nombre_usuario["current_token"]), flush=True)
+                
             else:
                 hash = self.solicitarContraseña()
                 current_hash = nombre_usuario["password_hash"]
@@ -71,11 +72,12 @@ class ClientAuth(Ice.Application):
                     if opcion == 1:
                         new_hash = self.solicitarNuevaContraseña()
                         authserver.changePassword(user, current_hash ,new_hash)
+                        print('"{}"'.format(nombre_usuario["current_token"]), flush=True)
                     elif opcion == 2:
-                        #token=authserver.getNewToken(user,current_hash)
-                        print("hola")
+                        token=authserver.getNewToken(user,current_hash)
+                        print('"{}"'.format(nombre_usuario["current_token"]), flush=True)
                     elif opcion == 0: 
-                        print(nombre_usuario["current_token"])
+                        print('"{}"'.format(nombre_usuario["current_token"]), flush=True)
                 else:
                     print("El usuario introducizo no existe o su contraseña es incorerecta\n ")
 
