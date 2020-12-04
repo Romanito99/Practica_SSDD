@@ -9,7 +9,7 @@ Ice.loadSlice('icegauntlet.ice')
 import IceGauntlet
 
 
-class ServerI(IceGauntlet.Server):
+class RoomManagerI(IceGauntlet.RoomManager):
 
     '''Clase ServerI'''
     def __init__(self,authserver):
@@ -19,7 +19,7 @@ class ServerI(IceGauntlet.Server):
         repetido=False
         ''' hola '''
         
-        if authserver.isValid(token):
+        if self.authserver.isValid(token):
             fichero=ast.literal_eval(room_data)
             try:
                 
@@ -48,6 +48,7 @@ class ServerI(IceGauntlet.Server):
                         break
                 if not repetido:  
                     i=len(lista)+random.randrange(1,1000000)
+
                     nombre="mapas/level"+str(i)+".json"    
                     with open((nombre),"w") as fichero_mapas:
                         json.dump(fichero, fichero_mapas)
@@ -67,7 +68,7 @@ class ServerI(IceGauntlet.Server):
     def remove(self , token , roomName , current=None):
         borrado=False
         '''hola'''
-        if authserver.isValid(token):
+        if self.authserver.isValid(token):
             
             lista=glob.glob(os.path.join('mapas','*.json'))
             for i in lista:
@@ -98,18 +99,19 @@ class DungeonI(IceGauntlet.Dungeon):
         
         try: 
             lista=glob.glob(os.path.join('mapas','*.json'))
-            q = random.randrange(1,len(lista))
+            q = random.randrange(0,len(lista))
             ruta=(lista.pop(q))
             with open(str(ruta)) as fichero_mapas:
                 datos_usuario=fichero_mapas.read()
             datos_usuario=json.loads(datos_usuario)
             datos_usuario.pop("current_token")
+            print(datos_usuario)
         except Exception as error:
             raise IceGauntlet.RoomNotExists("El servidor no tiene ningun mapa") 
         return str(datos_usuario)
 
     
-class Server(Ice.Application):
+class RoomManager(Ice.Application):
     '''Clase server '''
     def run(self, argv):
         proxy=self.communicator().stringToProxy(argv[1])
@@ -117,9 +119,9 @@ class Server(Ice.Application):
 
         if not authserver:
             raise RunTimeError('Invalid Proxy')
-        servant=ServerI(authserver)
-        adapter = self.communicator().createObjectAdapter('ServerAdapter')
-        proxy = adapter.add(servant, self.communicator().stringToIdentity('server'))
+        servant=RoomManagerI(authserver)
+        adapter = self.communicator().createObjectAdapter('RoomManagerAdapter')
+        proxy = adapter.add(servant, self.communicator().stringToIdentity('RoomManager'))
         print('"{}"'.format(proxy), flush=True)
         adapter.activate()
         
@@ -133,4 +135,4 @@ class Server(Ice.Application):
 
         return 0
 
-Server().main(sys.argv)
+RoomManager().main(sys.argv)
