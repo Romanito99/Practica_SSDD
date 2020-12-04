@@ -10,10 +10,6 @@ import IceGauntlet
 
 class Prueba ( ):
     def Prueba(self , argv):
-        lista=glob.glob(os.path.join('hola','*.json'))
-        q = random.randrange(1,len(lista))
-        print(lista.pop(q))
-
-        print(lista)
-
+        lista=glob.glob(os.path.join('mapas','*.json'))
+        print(len(lista))
 Prueba().Prueba(sys.argv)
