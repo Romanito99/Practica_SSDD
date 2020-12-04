@@ -7,33 +7,28 @@ Script to run authentication user
 import os
 import sys
 
-try:
-    import pexpect
-except ImportError:
-    print('Required library "pexpect" not exists. Install with pip and try again')
-    sys.exit(1)
-
 # Define command to request new token
-_COMMAND_ = 'python3 ClientRoom.py "%(auth_proxy)s %(token)s %(mapa)s  "1" '
+_COMMAND_ = 'python3 ClientRoom.py "%(server_proxy)s %(token)s %(mapa)s "1"'
 
 
 # Get required arguments
 try:
-    proxy ,  token , mapa  = sys.argv[1:]
+    server_proxy, token, mapa = sys.argv[1:]
 except ValueError:
-    print('Command arguments: {} <user> <password> <proxy>'.format(
+    print('Command arguments: {} <server_proxy> <token> <mapa> '.format(
         os.path.basename(sys.argv[0]))
     )
     sys.exit(1)
 
 # Compose command
 final_command = _COMMAND_ % {
-    'user': user,
-    'auth_proxy': proxy
+    'server_proxy': server_proxy,
+    'token':token,
+    'mapa':mapa
 }
 
 
 
 # Show command output and exit
-print(proc.before.decode().strip())
+#print(proc.before.decode().strip())
 sys.exit(0)
