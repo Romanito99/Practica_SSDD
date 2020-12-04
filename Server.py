@@ -17,8 +17,7 @@ class RoomManagerI(IceGauntlet.RoomManager):
 
     def publish(self , token , room_data , current=None):
         repetido=False
-        ''' hola '''
-        
+
         if self.authserver.isValid(token):
             fichero=ast.literal_eval(room_data)
             try:
@@ -31,7 +30,7 @@ class RoomManagerI(IceGauntlet.RoomManager):
                 raise IceGauntlet.WrongRoomFormat(str(error))
             else:
                 
-                lista=glob.glob(os.path.join('mapas','*.json'))
+                lista=glob.glob(os.path.join('maps','*.json'))
                 
                 for i in lista:
                     
@@ -40,10 +39,10 @@ class RoomManagerI(IceGauntlet.RoomManager):
                     datos_mapa=json.loads(datos_mapa)
                     
                     if datos_mapa["data"] == fichero["data"] and datos_mapa["current_token"]!=str(token):
-                        print ("Error al comprobar {}".format("la excepcion Unauthorized"))
-                        raise IceGauntlet.RoomAlreadyExists("Este fichero ya existe ")
+                        print ("Error: {}".format("Room Already Exists Exception"))
+                        raise IceGauntlet.RoomAlreadyExists("File already exists")
                     elif datos_mapa["data"] == fichero["data"] and datos_mapa["current_token"]==str(token):
-                        print("Este mapa existe y es tuyo")
+                        print("This map exists or it's not yours")
                         repetido=True
                         break
                 if not repetido:  
@@ -62,8 +61,8 @@ class RoomManagerI(IceGauntlet.RoomManager):
 
             
         else:
-            print ("Error al comprobar {}".format("la excepcion Unauthorized"))
-            raise IceGauntlet.Unauthorized(str("la excepcion"))
+            print ("Error: {}".format("Unauthorized Exception"))
+            raise IceGauntlet.Unauthorized()
 
     def remove(self , token , roomName , current=None):
         borrado=False
