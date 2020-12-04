@@ -16,15 +16,16 @@ class ServerI(IceGauntlet.Server):
         self.authserver=authserver
 
     def publish(self , token , room_data , current=None):
-        print("hola")
+        repetido=False
         ''' hola '''
         
-        if True:
+        if authserver.isValid(token):
             fichero=ast.literal_eval(room_data)
             try:
                 
                 data=fichero["data"]
                 room=fichero["room"]
+                
             except Exception as error:
                 print ("Error {}".format(error))
                 raise IceGauntlet.WrongRoomFormat(str(error))
@@ -33,55 +34,57 @@ class ServerI(IceGauntlet.Server):
                 lista=glob.glob(os.path.join('mapas','*.json'))
                 
                 for i in lista:
-                    print(str(i))
+                    
                     with open(str(i))as fichero_mapas:
                         datos_mapa=fichero_mapas.read()
                     datos_mapa=json.loads(datos_mapa)
-                    print(datos_mapa)
-                    if datos_mapa["data"] == fichero["data"]:
+                    
+                    if datos_mapa["data"] == fichero["data"] and datos_mapa["current_token"]!=str(token):
                         print ("Error al comprobar {}".format("la excepcion Unauthorized"))
                         raise IceGauntlet.RoomAlreadyExists("Este fichero ya existe ")
+                    elif datos_mapa["data"] == fichero["data"] and datos_mapa["current_token"]==str(token):
+                        print("Este mapa existe y es tuyo")
+                        repetido=True
+                        break
+                if not repetido:  
+                    i=len(lista)+random.randrange(1,1000000)
+                    nombre="mapas/level"+str(i)+".json"    
+                    with open((nombre),"w") as fichero_mapas:
+                        json.dump(fichero, fichero_mapas)
 
-                #random=random.randrandge(0,1000000)    
-                with open(("mapas/leveljson"),"w") as fichero_mapas:
-                    json.dump(fichero, fichero_mapas)
+                    with open(nombre) as fichero_mapas2:
+                        c=fichero_mapas2.read()
+                    mapas=json.loads(c)
+                    mapas["current_token"]=token
+                    with open((nombre),"w") as fichero_mapas3:
+                        json.dump(mapas, fichero_mapas3)
 
-                with open("mapas.json") as fichero_mapas:
-                    c=fichero_mapas.read()
-                mapas=json.loads(c)
-                mapas[fichero["room"]]={}
-                mapas[fichero["room"]]["current_token"]=token
-                
-
-            with open('mapas.json', 'w') as contents:
-                json.dump(mapas, contents, indent=2, sort_keys=True)
+            
         else:
             print ("Error al comprobar {}".format("la excepcion Unauthorized"))
             raise IceGauntlet.Unauthorized(str("la excepcion"))
 
     def remove(self , token , roomName , current=None):
+        borrado=False
         '''hola'''
-        if True:
-            with open("mapas.json") as fichero_mapas:
-                c=fichero_mapas.read()
-            mapas=json.loads(c)
-            lista=glob.glob(os.path.join('hola','*.json'))
-            q = random.randrange(1,len(lista))
+        if authserver.isValid(token):
+            
+            lista=glob.glob(os.path.join('mapas','*.json'))
             for i in lista:
                 mapa=str(i)
-                try:
-                    with open(mapa) as fichero_mapas:
-                        datos_mapa=fichero_mapas.read()
-                    datos_mapa=json.loads(datos_mapa)
-                                    
-                    if mapas[roomName] == roomName & datos_mapa["room"] == roomName:
-                        if mapas[roomName]["current_token"]==token:
-                            mapas.pop(roomName)
-                            os.remove(mapa)
-                            with open("mapas.json","w") as fichero_mapas:
-                                json.dump(mapas,fichero_mapas, indent=2, sort_keys=True)
-                except Exception as error:
-                    raise IceGauntlet.RoomNotExists("Este mapa no existe")
+                
+                with open(mapa) as fichero_mapas:
+                    datos_mapa=fichero_mapas.read()
+                datos_mapa=json.loads(datos_mapa)
+                                  
+                if  datos_mapa["room"] == str(roomName) and str (token) ==datos_mapa["current_token"]:
+            
+                    os.remove(mapa)
+                    borrado=True
+                    break
+                
+            if not borrado:            
+                raise IceGauntlet.RoomNotExists("Este mapa no existe o no es tuyo")
                     
         else:
             print ("Error al comprobar {}".format("la excepcion"))
@@ -91,16 +94,16 @@ class ServerI(IceGauntlet.Server):
 
 class DungeonI(IceGauntlet.Dungeon):
     def getRoom(self,current=None):
-        print("hola")
         '''Este metodo es para obtener un mapa'''                     
         
         try: 
-            lista=glob.glob(os.path.join('hola','*.json'))
+            lista=glob.glob(os.path.join('mapas','*.json'))
             q = random.randrange(1,len(lista))
             ruta=(lista.pop(q))
             with open(str(ruta)) as fichero_mapas:
                 datos_usuario=fichero_mapas.read()
             datos_usuario=json.loads(datos_usuario)
+            datos_usuario.pop("current_token")
         except Exception as error:
             raise IceGauntlet.RoomNotExists("El servidor no tiene ningun mapa") 
         return str(datos_usuario)
