@@ -16,116 +16,112 @@ class RoomManagerI(IceGauntlet.RoomManager):
         self.authserver=authserver
 
     def publish(self , token , room_data , current=None):
-        repetido=False
+        '''This metod publish a new map if it doesn't exists'''
+        file_exists=False
 
         if self.authserver.isValid(token):
-            fichero=ast.literal_eval(room_data)
+            room_data=ast.literal_eval(room_data)
             try:
-                
-                data=fichero["data"]
-                room=fichero["room"]
-                
+                data=room_data["data"]
+                room=room_data["room"]
             except Exception as error:
-                print ("Error {}".format(error))
-                raise IceGauntlet.WrongRoomFormat(str(error))
+                print ("Error: {}".format("WrongRoomFormat Exception"))
+                raise IceGauntlet.WrongRoomFormat()
+
             else:
-                
-                lista=glob.glob(os.path.join('maps','*.json'))
-                
-                for i in lista:
-                    
-                    with open(str(i))as fichero_mapas:
-                        datos_mapa=fichero_mapas.read()
-                    datos_mapa=json.loads(datos_mapa)
-                    
-                    if datos_mapa["data"] == fichero["data"] and datos_mapa["current_token"]!=str(token):
-                        print ("Error: {}".format("Room Already Exists Exception"))
-                        raise IceGauntlet.RoomAlreadyExists("File already exists")
-                    elif datos_mapa["data"] == fichero["data"] and datos_mapa["current_token"]==str(token):
-                        print("This map exists or it's not yours")
-                        repetido=True
-                        break
-                if not repetido:  
-                    i=len(lista)+random.randrange(1,1000000)
+                map_list=glob.glob(os.path.join('maps','*.json'))
 
-                    nombre="maps/level"+str(i)+".json"    
-                    with open((nombre),"w") as fichero_mapas:
-                        json.dump(fichero, fichero_mapas)
+                for i in map_list:
+                    with open(str(i))as maps_file:
+                        data_map=maps_file.read()
+                    data_map=json.loads(data_map)
 
-                    with open(nombre) as fichero_mapas2:
-                        c=fichero_mapas2.read()
-                    mapas=json.loads(c)
-                    mapas["current_token"]=token
-                    with open((nombre),"w") as fichero_mapas3:
-                        json.dump(mapas, fichero_mapas3)
+                    if data_map["data"] == data:
 
-            
+                        if data_map["current_token"]!=str(token):
+                            print ("Error: {}".format("Room Already Exists Exception"))
+                            raise IceGauntlet.RoomAlreadyExists()
+                        else:
+                            file_exists=True
+                            break
+
+                if not file_exists:
+                    i=len(map_list)+random.randrange(1,1000000)
+                    map_name="maps/level"+str(i)+".json"
+                    with open((map_name),"w") as maps_file:
+                        json.dump(room_data, maps_file)
+
+                    with open(map_name) as maps_file2:
+                        c=maps_file2.read()
+                    maps=json.loads(c)
+                    maps["current_token"]=token
+                    with open((map_name),"w") as maps_file3:
+                        json.dump(maps, maps_file3)
+
         else:
             print ("Error: {}".format("Unauthorized Exception"))
             raise IceGauntlet.Unauthorized()
 
     def remove(self , token , roomName , current=None):
-        borrado=False
-        '''hola'''
+        '''This metod remove a room from an authorized user'''
+        room_found=False
         if self.authserver.isValid(token):
-            
-            lista=glob.glob(os.path.join('maps','*.json'))
-            for i in lista:
-                mapa=str(i)
-                
-                with open(mapa) as fichero_mapas:
-                    datos_mapa=fichero_mapas.read()
-                datos_mapa=json.loads(datos_mapa)
-                print(datos_mapa["room"], roomName)
-                if  datos_mapa["room"] == str(roomName) and str(token)==datos_mapa["current_token"]:
-                    os.remove(mapa)
-                    borrado=True
-                    break
-                
-            if not borrado:            
-                raise IceGauntlet.RoomNotExists("Este mapa no existe o no es tuyo")
-                    
-        else:
-            print ("Error al comprobar {}".format("la excepcion"))
-            raise IceGauntlet.Unauthorized(str("la excepcion"))
 
-    
+            map_list=glob.glob(os.path.join('maps','*.json'))
+            for i in map_list:
+                map=str(i)
+                with open(map) as maps_file:
+                    data_map=maps_file.read()
+                data_map=json.loads(data_map)
+
+                if (data_map["room"]==str(roomName) and str(token)==data_map["current_token"]):
+                    '''Remove the room if it exists and the token is the correct one'''
+                    os.remove(map)
+                    room_found=True
+                    break
+            if not room_found:
+                '''If the room is not found we have made this exception'''
+                print ("Error: {}".format("Room Not Exists Exception "))
+                raise IceGauntlet.RoomNotExists()
+        else:
+            print ("Error: {}".format("Unauthorized Exception"))
+            raise IceGauntlet.Unauthorized()
 
 class DungeonI(IceGauntlet.Dungeon):
+    '''Class for DungeonI'''
     def getRoom(self,current=None):
-        '''Este metodo es para obtener un mapa'''                     
-        
-        try: 
-            lista=glob.glob(os.path.join('maps','*.json'))
-            q = random.randrange(0,len(lista))
-            ruta=(lista.pop(q))
-            with open(str(ruta)) as fichero_mapas:
-                datos_usuario=fichero_mapas.read()
-            datos_usuario=json.loads(datos_usuario)
-            datos_usuario.pop("current_token")
-            print(datos_usuario)
+        '''This metod obtain the map'''
+        try:
+            map_list=glob.glob(os.path.join('maps','*.json'))
+            random_map = random.randrange(0,len(map_list))
+            path=(map_list.pop(random_map))
+            with open(str(path)) as maps_file:
+                user_data=maps_file.read()
+            user_data=json.loads(user_data)
+            user_data.pop("current_token")
+            print(user_data)
         except Exception as error:
-            raise IceGauntlet.RoomNotExists("El servidor no tiene ningun mapa") 
-        return str(datos_usuario)
+            print ("Error: {}".format("Room Not Exists Exception"))
+            raise IceGauntlet.RoomNotExists()
+        return str(user_data)
 
-    
 class RoomManager(Ice.Application):
     '''Clase server '''
     def run(self, argv):
         proxy=self.communicator().stringToProxy(argv[1])
         authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy)
-        print(proxy)
+
         if not authserver:
-            raise RunTimeError('Invalid Proxy')
+            print ("Error: {}".format("Run Time Error Exception"))
+            raise RunTimeError()
         servant=RoomManagerI(authserver)
         adapter = self.communicator().createObjectAdapter('RoomManagerAdapter')
         proxy = adapter.add(servant, self.communicator().stringToIdentity('RoomManager'))
         print('"{}"'.format(proxy), flush=True)
         adapter.activate()
-        
-        servant_juego=DungeonI()
+        game_servant=DungeonI()
         adapter_dungeon = self.communicator().createObjectAdapter('DungeonAdapter')
-        proxy_dungeon = adapter.add(servant_juego, self.communicator().stringToIdentity('dungeon'))
+        proxy_dungeon = adapter.add(game_servant, self.communicator().stringToIdentity('dungeon'))
         print('"{}"'.format(proxy_dungeon), flush=True)
         adapter_dungeon.activate()
         self.shutdownOnInterrupt()

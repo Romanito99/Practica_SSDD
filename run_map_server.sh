@@ -2,17 +2,17 @@
 
 PYTHON=python3
 
+script=$(tempfile)
 
-#tmpfile=script
+$PYTHON AuthServer.py --Ice.Config=authserver.conf>script  & 
 
-script= $PYTHON AuthServer.py --Ice.Config=authserver.conf  & 
-echo $script
 PID=$!
+echo $(cat script)
 sleep 5
 
 
-$PYTHON Server.py --Ice.Config=server.conf  "$script"
-sleep 5
+$PYTHON Server.py --Ice.Config=server.conf  "$(cat script)"
 
 
+rm script
 kill -9 $PID

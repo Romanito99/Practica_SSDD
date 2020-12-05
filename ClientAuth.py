@@ -55,7 +55,7 @@ class ClientAuth(Ice.Application):
                 datos_usuario=f.read()
             datos_usuario=json.loads(datos_usuario)
         except:
-            print("No se ha podido leer el fichero json de busqueda")
+            print("File can't be read")
 
         else:
             
