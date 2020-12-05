@@ -48,7 +48,7 @@ class RoomManagerI(IceGauntlet.RoomManager):
                 if not repetido:  
                     i=len(lista)+random.randrange(1,1000000)
 
-                    nombre="mapas/level"+str(i)+".json"    
+                    nombre="maps/level"+str(i)+".json"    
                     with open((nombre),"w") as fichero_mapas:
                         json.dump(fichero, fichero_mapas)
 
@@ -69,16 +69,15 @@ class RoomManagerI(IceGauntlet.RoomManager):
         '''hola'''
         if self.authserver.isValid(token):
             
-            lista=glob.glob(os.path.join('mapas','*.json'))
+            lista=glob.glob(os.path.join('maps','*.json'))
             for i in lista:
                 mapa=str(i)
                 
                 with open(mapa) as fichero_mapas:
                     datos_mapa=fichero_mapas.read()
                 datos_mapa=json.loads(datos_mapa)
-                                  
-                if  datos_mapa["room"] == str(roomName) and str (token) ==datos_mapa["current_token"]:
-            
+                print(datos_mapa["room"], roomName)
+                if  datos_mapa["room"] == str(roomName) and str(token)==datos_mapa["current_token"]:
                     os.remove(mapa)
                     borrado=True
                     break
@@ -97,7 +96,7 @@ class DungeonI(IceGauntlet.Dungeon):
         '''Este metodo es para obtener un mapa'''                     
         
         try: 
-            lista=glob.glob(os.path.join('mapas','*.json'))
+            lista=glob.glob(os.path.join('maps','*.json'))
             q = random.randrange(0,len(lista))
             ruta=(lista.pop(q))
             with open(str(ruta)) as fichero_mapas:
@@ -115,7 +114,7 @@ class RoomManager(Ice.Application):
     def run(self, argv):
         proxy=self.communicator().stringToProxy(argv[1])
         authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy)
-
+        print(proxy)
         if not authserver:
             raise RunTimeError('Invalid Proxy')
         servant=RoomManagerI(authserver)
