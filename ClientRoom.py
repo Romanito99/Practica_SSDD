@@ -2,25 +2,34 @@ import sys
 import Ice 
 import os
 import json
+import argparse
 Ice.loadSlice('icegauntlet.ice')
 import IceGauntlet
 
 
 class ClientRoom(Ice.Application): 
+    def argumentos(self):
+        parser = argparse.ArgumentParser(description='Proxy, user  y elegir una opcion: 1.Publish 2.Remove')
+        parser.add_argument("-p","--proxy",required=True, help='proxy',type=str)
+        parser.add_argument("-t","--token",required=True,help='token',type=str)
+        parser.add_argument("-f","--file",required=True,help='file json',type=str)
+        parser.add_argument("-o","--option",required=True,help='.Publish 2.Remove',type=str)
+        
 
-    def elegirOpcion(self):
-        print("Que quiere hacer:\n1.Publicar\n 2.Remover ")
-        op= int(input("Elija un numero>"))
-        return op
+        args=parser.parse_args()
+        return args
 
     def run (self,argv):
+        args = self.argumentos()
+        proxy=args.proxy
+        token=args.token
+        roomData=str(args.file)
+        option=args.option
         broker=self.communicator()
-        proxy_RoomManager = broker.stringToProxy(argv[1])
+        proxy_RoomManager = broker.stringToProxy(proxy)
         
         RoomManager=IceGauntlet.RoomManagerPrx.checkedCast(proxy_RoomManager)
-        token = argv[2]
-        roomData = str(argv[3])
-        option= argv[4]
+        
         if not RoomManager:
             raise RuntimeError('Invalid Proxy')
 

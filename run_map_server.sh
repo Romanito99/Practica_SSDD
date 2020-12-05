@@ -2,16 +2,17 @@
 
 PYTHON=python3
 
-auth_proxy=$(tempfile)
 
+#tmpfile=script
 
-$PYTHON AuthServer.py --Ice.Config=authserver.conf>auth_proxy & 
+script= $PYTHON AuthServer.py --Ice.Config=authserver.conf  & 
+echo $script
 PID=$!
 sleep 5
-echo "authproxy: $(cat auth_proxy)"
 
-$PYTHON Server.py --Ice.Config=server.conf "$(cat auth_proxy)" 
+
+$PYTHON Server.py --Ice.Config=server.conf  "$script"
 sleep 5
 
-rm auth_proxy
+
 kill -9 $PID
