@@ -1,6 +1,7 @@
 # pylint: disable=C0114
 # pylint: disable=C0115
 # pylint: disable=C0116
+import sys
 import json
 import argparse
 import Ice
@@ -23,7 +24,7 @@ class ClientRoom(Ice.Application):
         args=parser.parse_args()
         return args
 
-    def run(self):
+    def run(self,args):
         '''This method is our main'''
         args = self.args_parser()
         proxy=args.proxy
@@ -32,7 +33,7 @@ class ClientRoom(Ice.Application):
         option=args.option
         broker=self.communicator()
         proxy_room_manager = broker.stringToProxy(proxy)
-        room_manager=IceGauntlet.RoomManagerPrx.checkedCast(proxy_room_manager)
+        room_manager=IceGauntlet.RoomManagerPrx.uncheckedCast(proxy_room_manager)
         if not room_manager:
             raise RuntimeError('Invalid Proxy')
 
@@ -56,4 +57,4 @@ class ClientRoom(Ice.Application):
                 room_data=user_data["room"]
                 room_manager.remove(str(token),str(room_data))
 
-ClientRoom().main()
+ClientRoom().main(sys.argv)
