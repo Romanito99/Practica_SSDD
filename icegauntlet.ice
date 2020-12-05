@@ -1,7 +1,7 @@
 module IceGauntlet  {
-    exception Unauthorized{ string error;};
-    exception RoomAlreadyExists{string error;};
-    exception RoomNotExists{string error;}; 
+    exception Unauthorized{};
+    exception RoomAlreadyExists{};
+    exception RoomNotExists{}; 
     exception WrongRoomFormat {};
 
     interface Authentication{ 

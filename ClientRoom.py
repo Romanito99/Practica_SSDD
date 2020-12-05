@@ -13,7 +13,7 @@ class ClientRoom(Ice.Application):
         parser.add_argument("-p","--proxy",required=True, help='proxy',type=str)
         parser.add_argument("-t","--token",required=True,help='token',type=str)
         parser.add_argument("-f","--file",required=True,help='file json',type=str)
-        parser.add_argument("-o","--option",required=True,help='.Publish 2.Remove',type=str)
+        parser.add_argument("-o","--option",required=True,help='1.Publish 2.Remove',type=str)
         
 
         args=parser.parse_args()
@@ -43,10 +43,8 @@ class ClientRoom(Ice.Application):
             except:
                 print("No se ha podido leer el fichero json de busqueda")
             else:
-                print("llega aqui")
                 RoomManager.publish(str(token),str(datos_usuario))
         elif option == "2":
-            print("llego aqui")
             try:
                 with open(roomData) as f:
                     datos_usuario=f.read()
@@ -54,9 +52,7 @@ class ClientRoom(Ice.Application):
             except:
                 print("No se ha podido leer el fichero json de busqueda")
             else:
-                print("y aqui")
                 roomData=datos_usuario["room"]
-                print(roomData)
                 RoomManager.remove(str(token),str(roomData))
                     
 ClientRoom().main(sys.argv)  
