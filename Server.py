@@ -1,3 +1,6 @@
+# pylint: disable=C0114
+# pylint: disable=C0115
+# pylint: disable=C0116
 import sys
 import os
 import json
@@ -6,12 +9,13 @@ import random
 import glob
 import Ice
 Ice.loadSlice('icegauntlet.ice')
+# pylint: disable=E0401
+# pylint: disable=C0413
 import IceGauntlet
 
 
 class RoomManagerI(IceGauntlet.RoomManager):
-
-    '''Clase ServerI'''
+    '''This Class '''
     def __init__(self,authserver):
         self.authserver=authserver
 
@@ -24,7 +28,7 @@ class RoomManagerI(IceGauntlet.RoomManager):
             try:
                 data=room_data["data"]
                 room=room_data["room"]
-            except Exception as error:
+            except Exception:
                 print ("Error: {}".format("WrongRoomFormat Exception"))
                 raise IceGauntlet.WrongRoomFormat()
 
@@ -52,8 +56,8 @@ class RoomManagerI(IceGauntlet.RoomManager):
                         json.dump(room_data, maps_file)
 
                     with open(map_name) as maps_file2:
-                        c=maps_file2.read()
-                    maps=json.loads(c)
+                        data_map=maps_file2.read()
+                    maps=json.loads(data_map)
                     maps["current_token"]=token
                     with open((map_name),"w") as maps_file3:
                         json.dump(maps, maps_file3)
@@ -100,7 +104,7 @@ class DungeonI(IceGauntlet.Dungeon):
             user_data=json.loads(user_data)
             user_data.pop("current_token")
             print(user_data)
-        except Exception as error:
+        except Exception:
             print ("Error: {}".format("Room Not Exists Exception"))
             raise IceGauntlet.RoomNotExists()
         return str(user_data)

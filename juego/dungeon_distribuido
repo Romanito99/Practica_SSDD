@@ -13,6 +13,8 @@ import argparse
 import Ice
 import ast
 Ice.loadSlice('icegauntlet.ice')
+# pylint: disable=E0401
+# pylint: disable=C0413
 import IceGauntlet
 
 import json
