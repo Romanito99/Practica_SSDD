@@ -5,6 +5,7 @@ import hashlib
 import json
 import argparse
 import getpass
+import sys
 import Ice
 Ice.loadSlice('icegauntlet.ice')
 # pylint: disable=E0401
@@ -42,10 +43,11 @@ class ClientAuth(Ice.Application):
         parser.add_argument("-o","--option",required=True,help='option',type=str)
         args=parser.parse_args()
         return args
-    def run(self):
+    def run(self,args):
         '''This method is our main'''
         args = self.args_parser()
         proxy=args.proxy
+        print(proxy)
         user=args.user
         opcion=args.option
         broker=self.communicator()
@@ -81,5 +83,5 @@ class ClientAuth(Ice.Application):
                 else:
                     print("User not valid or password not correct\n ")
 
-ClientAuth().run()
+ClientAuth().main(sys.argv)
  

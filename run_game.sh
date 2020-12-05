@@ -3,4 +3,4 @@
 PYTHON=python3
 
 cd -- "juego"
-$PYTHON dungeon_distribuido "$1"
+$PYTHON dungeon_distribuido.py "$1"

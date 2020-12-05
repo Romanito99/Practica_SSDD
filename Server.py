@@ -69,6 +69,7 @@ class RoomManagerI(IceGauntlet.RoomManager):
     def remove(self , token , roomName , current=None):
         '''This metod remove a room from an authorized user'''
         room_found=False
+        
         if self.authserver.isValid(token):
 
             map_list=glob.glob(os.path.join('maps','*.json'))
@@ -130,7 +131,6 @@ class RoomManager(Ice.Application):
         adapter_dungeon.activate()
         self.shutdownOnInterrupt()
         self.communicator().waitForShutdown()
-
         return 0
 
 RoomManager().main(sys.argv)
