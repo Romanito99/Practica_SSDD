@@ -6,7 +6,6 @@
     Game base and states
 '''
 
-
 import uuid
 
 import pyxel
@@ -50,7 +49,6 @@ class PlayerData:
         }
         if initial_attributes:
             self.attribute.update(initial_attributes)
-    
     @property
     def hero_class(self):
         return self.attribute['hero_class']

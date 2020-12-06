@@ -5,7 +5,14 @@
 '''
     Gauntlet engine
 '''
-
+# pylint: disable=E0401
+# pylint: disable=W0107
+# pylint: disable=R1725
+# pylint: disable=C0116
+# pylint: disable=W0613
+# pylint: disable=C0103
+# pylint: disable=R0904
+# pylint: disable=W0611
 import pyxel
 
 import game

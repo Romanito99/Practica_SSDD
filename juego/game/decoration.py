@@ -5,7 +5,7 @@
 '''
     Decorations used in the game
 '''
-
+# pylint: disable=E0401
 from game.game_object import Decoration
 from game.sprite import animation
 from game.pyxeltools import MAP_ENTITIES

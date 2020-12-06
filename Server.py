@@ -1,9 +1,18 @@
-# pylint: disable=C0114
-# pylint: disable=C0115
-# pylint: disable=C0116
-# pylint: disable=W1203
-# pylint: disable=W0613
+# Quitamos estos errores debido a que el import IceGauntlet no se puede determinar antes
+# pylint: disable=E0401
+# pylint: disable=C0413
+# Quitamos este error ya que la linea 6 es una justificacion y no importa que sea tan larga
+# pylint: disable=C0301
+# Quitamos este error debido a que, segun lo aprendido, no es una mala forma de llamar a nuestra clase
 # pylint: disable=C0103
+# Quitamos este error debido a que RunTimeError es una excepcion
+# pylint: disable=E0602
+# Quitamos este error debido a que 'current' es necesario pasarlo como arg
+# pylint: disable=W0613
+'''
+    Room Manager Server and Game Server
+'''
+
 import sys
 import os
 import json
@@ -12,8 +21,6 @@ import random
 import glob
 import Ice
 Ice.loadSlice('icegauntlet.ice')
-# pylint: disable=E0401
-# pylint: disable=C0413
 import IceGauntlet
 
 
@@ -130,10 +137,9 @@ class RoomManager(Ice.Application):
         adapter_dungeon = self.communicator().createObjectAdapter('DungeonAdapter')
         proxy_dungeon = adapter.add(game_servant, self.communicator().stringToIdentity('dungeon'))
         proxy_dungeon='"'+str(proxy_dungeon)+'"'
-        handler = open('test', 'w')
+        handler = open('dungeon_proxy', 'w')
         handler.write(str(proxy_dungeon))
         handler.close()
-        print('"{}"'.format(proxy_dungeon), flush=True)
         adapter_dungeon.activate()
         self.shutdownOnInterrupt()
         self.communicator().waitForShutdown()

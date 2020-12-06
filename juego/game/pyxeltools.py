@@ -5,7 +5,10 @@
 '''
     Tools for pyxel
 '''
-
+# pylint: disable=E0401
+# pylint: disable=C0103
+# pylint: disable=W0707
+# pylint: disable=W0603
 import json
 import logging
 import os.path

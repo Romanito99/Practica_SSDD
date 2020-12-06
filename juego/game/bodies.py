@@ -4,7 +4,9 @@
 
 '''Game objects bodies'''
 
-
+# pylint: disable=E0401
+# pylint: disable=R1725
+# pylint: disable=C0103
 from game.pyxeltools import CELL_SIZE
 from game.common import X, Y
 

@@ -2,7 +2,7 @@
 
 PYTHON=python3
 
-echo "$(cat test) "
+echo "$(cat dungeon_proxy) "
 
 
 

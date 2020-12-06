@@ -5,7 +5,11 @@
 '''
     Objects used in the game
 '''
-
+# pylint: disable=E0401
+# pylint: disable=R1725
+# pylint: disable=R0903
+# pylint: disable=W0611
+# pylint: disable=C0116
 from game.artwork import TREASURE_ANIM, TELEPORT_ANIM
 from game.game_object import Item
 from game.common import X, Y, TILE_ID,\

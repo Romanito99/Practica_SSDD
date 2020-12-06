@@ -4,6 +4,9 @@
 
 ''' Heroes factory '''
 
+# pylint: disable=E0401
+# pylint: disable=R1725
+# pylint: disable=R0903
 from game.common import WARRIOR, VALKYRIE, WIZARD, ELF,\
     HEROES_SPAWN, SPAWN_IDS, KEYS, HERO_CLASS, SCORE, LIFE,\
     INITIAL_HERO_LIFE

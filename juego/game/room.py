@@ -5,7 +5,10 @@
 '''
     Handling room events and objects
 '''
-
+# pylint: disable=E0401
+# pylint: disable=C0103
+# pylint: disable=W0102
+# pylint: disable=W1202
 import logging
 
 from game.layer import TileMapLayer
