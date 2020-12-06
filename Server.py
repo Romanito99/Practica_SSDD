@@ -1,6 +1,9 @@
 # pylint: disable=C0114
 # pylint: disable=C0115
 # pylint: disable=C0116
+# pylint: disable=W1203
+# pylint: disable=W0613
+# pylint: disable=C0103
 import sys
 import os
 import json
@@ -15,8 +18,9 @@ import IceGauntlet
 
 
 class RoomManagerI(IceGauntlet.RoomManager):
-    '''This Class '''
+    '''This Class publish or remove a map'''
     def __init__(self,authserver):
+        '''This method is our init'''
         self.authserver=authserver
 
     def publish(self , token , room_data , current=None):
@@ -27,7 +31,7 @@ class RoomManagerI(IceGauntlet.RoomManager):
             room_data=ast.literal_eval(room_data)
             try:
                 data=room_data["data"]
-                room=room_data["room"]
+                room_data["room"]
             except Exception:
                 print ("Error: {}".format("WrongRoomFormat Exception"))
                 raise IceGauntlet.WrongRoomFormat()
@@ -69,7 +73,6 @@ class RoomManagerI(IceGauntlet.RoomManager):
     def remove(self , token , roomName , current=None):
         '''This metod remove a room from an authorized user'''
         room_found=False
-        
         if self.authserver.isValid(token):
 
             map_list=glob.glob(os.path.join('maps','*.json'))
@@ -80,12 +83,10 @@ class RoomManagerI(IceGauntlet.RoomManager):
                 data_map=json.loads(data_map)
 
                 if (data_map["room"]==str(roomName) and str(token)==data_map["current_token"]):
-                    '''Remove the room if it exists and the token is the correct one'''
                     os.remove(map)
                     room_found=True
                     break
             if not room_found:
-                '''If the room is not found we have made this exception'''
                 print ("Error: {}".format("Room Not Exists Exception "))
                 raise IceGauntlet.RoomNotExists()
         else:
@@ -113,6 +114,7 @@ class DungeonI(IceGauntlet.Dungeon):
 class RoomManager(Ice.Application):
     '''Clase server '''
     def run(self, argv):
+        '''This method is our main'''
         proxy=self.communicator().stringToProxy(argv[1])
         authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy)
 
@@ -127,6 +129,10 @@ class RoomManager(Ice.Application):
         game_servant=DungeonI()
         adapter_dungeon = self.communicator().createObjectAdapter('DungeonAdapter')
         proxy_dungeon = adapter.add(game_servant, self.communicator().stringToIdentity('dungeon'))
+        proxy_dungeon='"'+str(proxy_dungeon)+'"'
+        handler = open('test', 'w')
+        handler.write(str(proxy_dungeon))
+        handler.close()
         print('"{}"'.format(proxy_dungeon), flush=True)
         adapter_dungeon.activate()
         self.shutdownOnInterrupt()
