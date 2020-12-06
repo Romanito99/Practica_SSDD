@@ -112,7 +112,6 @@ class DungeonI(IceGauntlet.Dungeon):
                 user_data=maps_file.read()
             user_data=json.loads(user_data)
             user_data.pop("current_token")
-            print(user_data)
         except Exception:
             print ("Error: {}".format("Room Not Exists Exception"))
             raise IceGauntlet.RoomNotExists()

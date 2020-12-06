@@ -55,7 +55,6 @@ class ClientAuth(Ice.Application):
         '''This method is our main'''
         args = self.args_parser()
         proxy=args.proxy
-        print(proxy)
         user=args.user
         opcion=args.option
         broker=self.communicator()
