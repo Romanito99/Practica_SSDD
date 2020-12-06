@@ -5,7 +5,12 @@
 '''
 2D graphics
 '''
-
+# pylint: disable=W0107
+# pylint: disable=E0401
+# pylint: disable=C0103
+# pylint: disable=W1113
+# pylint: disable=R0913
+# pylint: disable=R0902
 import pyxel
 
 from game.pyxeltools import tile, get_color_mask

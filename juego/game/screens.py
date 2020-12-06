@@ -5,7 +5,12 @@
 '''
     In-game screens
 '''
-
+# pylint: disable=E0401
+# pylint: disable=C0116
+# pylint: disable=W0201
+# pylint: disable=R1725
+# pylint: disable=R0903
+# pylint: disable=W0611
 import pyxel
 
 import game

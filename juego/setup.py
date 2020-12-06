@@ -2,7 +2,7 @@
 '''
 IceGauntlet distribution script
 '''
-
+# pylint: disable=C0103
 import sys
 import glob
 from os.path import expanduser, join

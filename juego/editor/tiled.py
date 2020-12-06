@@ -5,7 +5,11 @@
 '''
    Handle TMX/TSX files
 '''
-
+# pylint: disable=C0303
+# pylint: disable=C0103
+# pylint: disable=C0301
+# pylint: disable=R1725
+# pylint: disable=R0801
 import math
 import os.path
 

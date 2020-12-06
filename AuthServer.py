@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# pylint: disable=W1203
-# pylint: disable=W0613
+# Quitamos este error ya que la linea 6 es una justificacion y no importa que sea tan larga
+# pylint: disable=C0301
+# Quitamos este error debido a que, segun lo aprendido, no es una mala forma de llamar a nuestra clase
 # pylint: disable=C0103
+# Quitamos estos errores debido a que ya lo tenia el .py original y no debemos modificarlo
+# pylint: disable=W0613
+# pylint: disable=W1203
+# pylint: disable=R1718
+# pylint: disable=W1202
+
 
 '''
    ICE Gauntlet Token Server

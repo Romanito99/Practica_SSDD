@@ -4,7 +4,9 @@
 
 '''Base classes for every in-game object'''
 
-
+# pylint: disable=E0401
+# pylint: disable=W0107
+# pylint: disable=R1725
 import uuid
 
 from game.bodies import Body, Box

@@ -1,14 +1,21 @@
-# pylint: disable=C0114
-# pylint: disable=C0115
-# pylint: disable=C0116
+# Quitamos estos errores debido a que el import IceGauntlet no se puede determinar antes
+# pylint: disable=E0401
+# pylint: disable=C0413
+# Quitamos este error ya que la linea 6 es una justificacion y no importa que sea tan larga
+# pylint: disable=C0301
+# Quitamos este error debido a que, segun lo aprendido, no es una mala forma de llamar a nuestra clase
 # pylint: disable=C0103
+# Quitamos este error debido a que RunTimeError es una excepcion
+# pylint: disable=E0602
+'''
+    Room Manager Client
+'''
+
 import sys
 import json
 import argparse
 import Ice
 Ice.loadSlice('icegauntlet.ice')
-# pylint: disable=E0401
-# pylint: disable=C0413
 import IceGauntlet
 
 

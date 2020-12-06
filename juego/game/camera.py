@@ -4,7 +4,7 @@
 
 ''' Camera control '''
 
-
+# pylint: disable=E0401
 from game.pyxeltools import SCREEN_WIDTH, SCREEN_HEIGHT
 
 

@@ -2,7 +2,8 @@
 '''
 IceGauntlet map editor distribution script
 '''
-
+# pylint: disable=C0103
+# pylint: disable=W0611
 import sys
 import glob
 from os.path import expanduser, join

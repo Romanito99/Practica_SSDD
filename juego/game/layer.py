@@ -5,7 +5,8 @@
 '''
     TileMap handling
 '''
-
+# pylint: disable=E0401
+# pylint: disable=C0103
 import pyxel
 
 from game.common import EMPTY_TILE, AVAILABLE_OBJECT_IDS, NULL_TILE, WALL_TILES

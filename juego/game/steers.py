@@ -5,7 +5,8 @@
 '''
     Steers implementation
 '''
-
+# pylint: disable=E0401
+# pylint: disable=R0903
 import pyxel
 
 from game.common import DIR_X, DIR_Y

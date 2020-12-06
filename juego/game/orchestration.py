@@ -5,7 +5,10 @@
 '''
 Orchestration of game in a dungeon room
 '''
-
+# pylint: disable=E0401
+# pylint: disable=W0511
+# pylint: disable=C0103
+# pylint: disable=W1203
 
 import sys
 import math
