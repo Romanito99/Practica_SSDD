@@ -10,14 +10,14 @@ import sys
 import atexit
 import logging
 import argparse
-import Ice
 import ast
+import json
+import Ice
 Ice.loadSlice('icegauntlet.ice')
 # pylint: disable=E0401
 # pylint: disable=C0413
+# pylint: disable=C0116
 import IceGauntlet
-
-import json
 import game
 import game.common
 import game.screens
@@ -50,10 +50,7 @@ class DungeonMapDistribuido():
         fichero=ast.literal_eval(fichero)
         with open(("tutorial.json"),"w") as fichero_mapas:
             json.dump(fichero, fichero_mapas)
-            
-        return 'tutorial.json'
-            
-
+        return 'tutorial.json'      
     @property
     def finished(self):
         return False
@@ -76,11 +73,8 @@ def parse_commandline():
         if not game.assets.search(level_file):
             logging.error(f'Level "{level_file}" not found!')
             return None'''
-    return options  
-
-
-
-
+    return options
+    
 def main():
     '''Start game according to commandline'''
     user_options = parse_commandline()

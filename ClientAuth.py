@@ -1,6 +1,7 @@
 # pylint: disable=C0114
 # pylint: disable=C0115
 # pylint: disable=C0116
+# pylint: disable=c0103
 import hashlib
 import json
 import argparse

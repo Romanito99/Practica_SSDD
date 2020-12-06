@@ -3,6 +3,7 @@
 #
 # pylint: disable=W1203
 # pylint: disable=W0613
+# pylint: disable=C0103
 
 '''
    ICE Gauntlet Token Server
@@ -30,6 +31,7 @@ TOKEN_SIZE = 40
 
 
 def _build_token_():
+    '''Build token'''
     valid_chars = string.digits + string.ascii_letters
     return ''.join([random.choice(valid_chars) for _ in range(TOKEN_SIZE)])
 
