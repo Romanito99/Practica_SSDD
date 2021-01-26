@@ -113,6 +113,16 @@ class AuthenticationI(IceGauntlet.Authentication):
         '''Return if token is active'''
         return token in self._active_tokens_
 
+    def getOwner (self,token, current=None): 
+        for i in self._users_ :
+            print(i)
+            if token == str(self._users_[i][CURRENT_TOKEN]):
+                print(self._users_[i][CURRENT_TOKEN])
+                user = i
+                
+                return user
+        if user not in self._users_:
+            raise IceGauntlet.Unauthorized()
 
 class Server(Ice.Application):
     '''

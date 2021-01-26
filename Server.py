@@ -33,72 +33,66 @@ class RoomManagerI(IceGauntlet.RoomManager):
     def publish(self , token , room_data , current=None):
         '''This metod publish a new map if it doesn't exists'''
         file_exists=False
-
-        if self.authserver.isValid(token):
-            room_data=ast.literal_eval(room_data)
-            try:
-                data=room_data["data"]
-                room_data["room"]
-            except Exception:
-                print ("Error: {}".format("WrongRoomFormat Exception"))
-                raise IceGauntlet.WrongRoomFormat()
-
-            else:
-                map_list=glob.glob(os.path.join('maps','*.json'))
-
-                for i in map_list:
-                    with open(str(i))as maps_file:
-                        data_map=maps_file.read()
-                    data_map=json.loads(data_map)
-
-                    if data_map["data"] == data:
-
-                        if data_map["current_token"]!=str(token):
-                            print ("Error: {}".format("Room Already Exists Exception"))
-                            raise IceGauntlet.RoomAlreadyExists()
-                        else:
-                            file_exists=True
-                            break
-
-                if not file_exists:
-                    i=len(map_list)+random.randrange(1,1000000)
-                    map_name="maps/level"+str(i)+".json"
-                    with open((map_name),"w") as maps_file:
-                        json.dump(room_data, maps_file)
-
-                    with open(map_name) as maps_file2:
-                        data_map=maps_file2.read()
-                    maps=json.loads(data_map)
-                    maps["current_token"]=token
-                    with open((map_name),"w") as maps_file3:
-                        json.dump(maps, maps_file3)
+        user = self.authserver.getOwner(token)
+        room_data=ast.literal_eval(room_data)
+        try:
+            data=room_data["data"]
+            room_data["room"]
+        except Exception:
+            print ("Error: {}".format("WrongRoomFormat Exception"))
+            raise IceGauntlet.WrongRoomFormat()
 
         else:
-            print ("Error: {}".format("Unauthorized Exception"))
-            raise IceGauntlet.Unauthorized()
+            map_list=glob.glob(os.path.join('maps','*.json'))
+
+            for i in map_list:
+                with open(str(i))as maps_file:
+                    data_map=maps_file.read()
+                data_map=json.loads(data_map)
+
+                if data_map["data"] == data:
+
+                    if data_map["user"]!=str(user):
+                        print ("Error: {}".format("Room Already Exists Exception"))
+                        raise IceGauntlet.RoomAlreadyExists()
+                    else:
+                        file_exists=True
+                        break
+
+            if not file_exists:
+                i=len(map_list)+random.randrange(1,1000000)
+                map_name="maps/level"+str(i)+".json"
+                with open((map_name),"w") as maps_file:
+                    json.dump(room_data, maps_file)
+
+                with open(map_name) as maps_file2:
+                    data_map=maps_file2.read()
+                maps=json.loads(data_map)
+                maps["user"]=user
+                with open((map_name),"w") as maps_file3:
+                    json.dump(maps, maps_file3)
+
 
     def remove(self , token , roomName , current=None):
         '''This metod remove a room from an authorized user'''
         room_found=False
-        if self.authserver.isValid(token):
+        user = self.authserver.getOwner(token)
 
-            map_list=glob.glob(os.path.join('maps','*.json'))
-            for i in map_list:
-                map=str(i)
-                with open(map) as maps_file:
-                    data_map=maps_file.read()
-                data_map=json.loads(data_map)
+        map_list=glob.glob(os.path.join('maps','*.json'))
+        for i in map_list:
+            map=str(i)
+            with open(map) as maps_file:
+                data_map=maps_file.read()
+            data_map=json.loads(data_map)
 
-                if (data_map["room"]==str(roomName) and str(token)==data_map["current_token"]):
-                    os.remove(map)
-                    room_found=True
-                    break
-            if not room_found:
-                print ("Error: {}".format("Room Not Exists Exception "))
-                raise IceGauntlet.RoomNotExists()
-        else:
-            print ("Error: {}".format("Unauthorized Exception"))
-            raise IceGauntlet.Unauthorized()
+            if (data_map["room"]==str(roomName) and str(user)==data_map["user"]):
+                os.remove(map)
+                room_found=True
+                break
+        if not room_found:
+            print ("Error: {}".format("Room Not Exists Exception "))
+            raise IceGauntlet.RoomNotExists()
+
 
 class DungeonI(IceGauntlet.Dungeon):
     '''Class for DungeonI'''
@@ -111,7 +105,7 @@ class DungeonI(IceGauntlet.Dungeon):
             with open(str(path)) as maps_file:
                 user_data=maps_file.read()
             user_data=json.loads(user_data)
-            user_data.pop("current_token")
+            user_data.pop("user")
         except Exception:
             print ("Error: {}".format("Room Not Exists Exception"))
             raise IceGauntlet.RoomNotExists()
@@ -121,8 +115,11 @@ class RoomManager(Ice.Application):
     '''Clase server '''
     def run(self, argv):
         '''This method is our main'''
-        proxy=self.communicator().stringToProxy(argv[1])
-        authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy)
+        broker=self.communicator()
+        proxy=argv[1]
+        print(proxy)
+        proxy_authserver=broker.stringToProxy(proxy)
+        authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy_authserver)
 
         if not authserver:
             print ("Error: {}".format("Run Time Error Exception"))
