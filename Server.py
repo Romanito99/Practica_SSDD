@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Quitamos estos errores debido a que el import IceGauntlet no se puede determinar antes
 # pylint: disable=E0401
 # pylint: disable=C0413
@@ -9,19 +10,23 @@
 # pylint: disable=E0602
 # Quitamos este error debido a que 'current' es necesario pasarlo como arg
 # pylint: disable=W0613
-'''
-    Room Manager Server and Game Server
-'''
+
 
 import sys
 import os
 import json
 import ast
 import random
+import string
+import yaml
 import glob
 import Ice
+import IceStorm
 Ice.loadSlice('icegauntlet.ice')
 import IceGauntlet
+import uuid
+
+lista=[]
 
 
 class RoomManagerI(IceGauntlet.RoomManager):
@@ -110,35 +115,83 @@ class DungeonI(IceGauntlet.Dungeon):
             print ("Error: {}".format("Room Not Exists Exception"))
             raise IceGauntlet.RoomNotExists()
         return str(user_data)
+class RoomManagerSyncI(IceGauntlet.RoomManagerSync):
+    def hello(self, room_manager_prx, id_server, current=None):
+        print(' HELLO ' +self.server.id+ ' conoce al nuevo servidor  ' + id_server)
+        if (self.server.id != id_server) :
+            lista.append(id_server)
+            print(lista)
+            self.server.server_sync_prx.announce(self.server.room_manager_prx, self.server.id)  
+        
+    def announce(self, room_manager_prx, id_server, current=None):
+        if self.server.id != id_server and id_server not in lista:
+            print('ANNOUNCE '+id_server+' se presenta ' + self.server.id)
+            lista.append(id_server)
+        
+    
 
 class RoomManager(Ice.Application):
     '''Clase server '''
-    def run(self, argv):
-        '''This method is our main'''
-        broker=self.communicator()
-        proxy=argv[1]
-        print(proxy)
-        proxy_authserver=broker.stringToProxy(proxy)
-        authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy_authserver)
-
+    room_manager_prx=None
+    id=None
+    room_manager_sync_channel_prx=None
+    server_sync_prx=None
+    
+    
+    def run(self, args):
+        
+        proxy = self.communicator().propertyToProxy("property_authorization")
+        authserver=IceGauntlet.AuthenticationPrx.checkedCast(proxy)
+    
         if not authserver:
-            print ("Error: {}".format("Run Time Error Exception"))
-            raise RunTimeError()
+            raise RunTimeError('Invalid Proxy')
+
+        self.id = uuid.uuid4().hex
+        adapter = self.communicator().createObjectAdapter('ServerAdapter')
         servant=RoomManagerI(authserver)
-        adapter = self.communicator().createObjectAdapter('RoomManagerAdapter')
-        proxy = adapter.add(servant, self.communicator().stringToIdentity('RoomManager'))
-        print('"{}"'.format(proxy), flush=True)
+        proxy = adapter.add(servant,Ice.stringToIdentity("maps_" +self.id))
+        icestorm_proxy = self.communicator().stringToProxy("SSDD-CONEJO-BRAOJOS.IceStorm/TopicManager")
+       
+        
+        if icestorm_proxy is None:
+            print("hola")
+            print("property '{}' not set".format("SSDD-Braojos.IceStorm/TopicManager"))
+            return None
+
+        icestorm_topic_manager = IceStorm.TopicManagerPrx.uncheckedCast(icestorm_proxy)
+        if not icestorm_topic_manager:
+            print("Invalid topic manager")
+            return 1
+        
+        chanelName= "RoomManagerSyncChannel"
+        
+        try:
+            
+            self.room_manager_sync_channel_prx = icestorm_topic_manager.retrieve("RoomManagerSyncChannel")
+        except IceStorm.NoSuchTopic:
+            self.room_manager_sync_channel_prx = icestorm_topic_manager.create("RoomManagerSyncChannel")
+        
+        self.room_manager_prx = IceGauntlet.RoomManagerPrx.uncheckedCast(proxy)
+        eventos=RoomManagerSyncI()
+        eventos.server=self
+        self.server_sync_prx = adapter.addWithUUID(eventos)
+        
+        self.room_manager_sync_channel_prx.subscribeAndGetPublisher(dict(),self.server_sync_prx)
         adapter.activate()
-        game_servant=DungeonI()
+        
+        self.server_sync_prx = IceGauntlet.RoomManagerSyncPrx.uncheckedCast(self.room_manager_sync_channel_prx.getPublisher())
+        self.server_sync_prx.hello(self.room_manager_prx, self.id) 
+
+        '''servidor de juegos'''
+        servant_juego=DungeonI()
         adapter_dungeon = self.communicator().createObjectAdapter('DungeonAdapter')
-        proxy_dungeon = adapter.add(game_servant, self.communicator().stringToIdentity('dungeon'))
-        proxy_dungeon='"'+str(proxy_dungeon)+'"'
-        handler = open('dungeon_proxy', 'w')
-        handler.write(str(proxy_dungeon))
-        handler.close()
+        proxy_dungeon = adapter.add(servant_juego, Ice.stringToIdentity("proxy_dungeon_"+self.id))
         adapter_dungeon.activate()
-        self.shutdownOnInterrupt()
+        
         self.communicator().waitForShutdown()
+
         return 0
 
-RoomManager().main(sys.argv)
+if __name__ == '__main__':
+    app = RoomManager()
+    sys.exit(app.main(sys.argv))
