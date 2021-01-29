@@ -114,13 +114,12 @@ class AuthenticationI(IceGauntlet.Authentication):
         return token in self._active_tokens_
 
     def getOwner (self,token, current=None): 
-        for i in self._users_ :
-            print(i)
-            if token == str(self._users_[i][CURRENT_TOKEN]):
-                print(self._users_[i][CURRENT_TOKEN])
-                user = i
+        print(i)
+        if token == str(self._users_[i][CURRENT_TOKEN]):
+            print(self._users_[i][CURRENT_TOKEN])
+            user = i
                 
-                return user
+        return user
         if user not in self._users_:
             raise IceGauntlet.Unauthorized()
 
@@ -135,9 +134,8 @@ class Server(Ice.Application):
         logging.debug('Initializing server...')
         servant = AuthenticationI()
         signal.signal(signal.SIGUSR1, servant.refresh)
-
         adapter = self.communicator().createObjectAdapter('AuthenticationAdapter')
-        proxy = adapter.add(servant, self.communicator().stringToIdentity('Authentication'))
+        proxy = adapter.add(servant, self.communicator().stringToIdentity('default'))
         adapter.addDefaultServant(servant, '')
         adapter.activate()
         logging.debug('Adapter ready, servant proxy: {}'.format(proxy))
