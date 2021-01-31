@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Quitamos estos errores debido a que el import IceGauntlet no se puede determinar antes
 # pylint: disable=E0401
 # pylint: disable=C0413
@@ -40,8 +41,11 @@ class ClientRoom(Ice.Application):
         room_data=str(args.file)
         option=args.option
         broker=self.communicator()
-        proxy_room_manager = broker.stringToProxy(proxy)
-        room_manager=IceGauntlet.RoomManagerPrx.uncheckedCast(proxy_room_manager)
+        print(proxy)
+        proxy_room_manager = broker.stringToProxy(str(proxy))
+        print(proxy_room_manager)
+        room_manager=IceGauntlet.RoomManagerPrx.checkedCast(proxy_room_manager)
+
         if not room_manager:
             raise RuntimeError('Invalid Proxy')
 

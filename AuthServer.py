@@ -115,11 +115,11 @@ class AuthenticationI(IceGauntlet.Authentication):
 
     def getOwner (self, token, current=None):
         '''Return user name of the token owner'''
+        print("hola")
         for i in self._users_:
-            if token == str(self._users_[i][CURRENT_TOKEN]):
-                print(self._users_[i][CURRENT_TOKEN])
+            if token == self._users_[i][CURRENT_TOKEN]:
                 user = self._users_[i]
-            return user
+                return i
 
         if user not in self._users_:
             raise IceGauntlet.Unauthorized()
