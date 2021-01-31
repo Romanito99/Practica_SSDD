@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Quitamos estos errores debido a que el import IceGauntlet no se puede determinar antes
 # pylint: disable=E0401
 # pylint: disable=C0413
