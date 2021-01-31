@@ -115,7 +115,6 @@ class AuthenticationI(IceGauntlet.Authentication):
 
     def getOwner (self, token, current=None):
         '''Return user name of the token owner'''
-        
         for i in self._users_:
             if token == self._users_[i][CURRENT_TOKEN]:
                 user = self._users_[i]
