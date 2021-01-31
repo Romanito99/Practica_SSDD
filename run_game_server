@@ -1,8 +1,0 @@
-#!/bin/sh
-
-PYTHON=python3
-
-echo "$(cat dungeon_proxy) "
-
-
-

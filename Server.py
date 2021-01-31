@@ -159,12 +159,12 @@ class RoomManagerSyncI(IceGauntlet.RoomManagerSync):
     
     def newRoom(self, roomName, id_server, current=None):
         '''This method is for the event newRoom which notify that a new map is received'''
-        print('El servidor ' +id_server+ ' ha obtenido el mapa ' +roomName)
+        print('"NEW ROOM" El servidor ' +id_server+ ' ha obtenido el mapa ' +roomName)
         newRoom=lista[id_server].getRoom(roomName)
 
     def removedRoom(self,roomName, current=None):
         '''This method is for the event newRoom which notify that a map is removed'''
-        print('Se  ha eliminado el mapa: '+ roomName)
+        print('"REMOVED ROOM" Se  ha eliminado el mapa: '+ roomName)
         
 
 class RoomManager(Ice.Application):
