@@ -50,7 +50,7 @@ class DungeonMapDistribuido():
         fichero=ast.literal_eval(fichero)
         with open(("tutorial.json"),"w") as fichero_mapas:
             json.dump(fichero, fichero_mapas)
-        return 'tutorial.json'      
+        return 'tutorial.json'
     @property
     def finished(self):
         return False

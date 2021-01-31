@@ -21,10 +21,8 @@ import os
 import json
 import ast
 import random
-import string
 import uuid
 import glob
-import yaml
 import Ice
 Ice.loadSlice('icegauntlet.ice')
 import IceGauntlet
@@ -35,21 +33,19 @@ listamapas={}
 
 class RoomManagerI(IceGauntlet.RoomManager):
     '''This Class publish or remove a map'''
-    
+
     def __init__(self , authserver , id , room_manager_sync_channel_prx):
         '''This method is our init'''
         self.authserver=authserver
         self.room_manager_sync_channel_prx=room_manager_sync_channel_prx
         self.id=id
-        
 
     def publish(self , token , room_data , current=None):
         '''This metod publish a new map if it doesn't exists'''
         file_exists=False
-        
         user = self.authserver.getOwner(token)
         room_data=ast.literal_eval(room_data)
-        
+
         try:
             data=room_data["data"]
             room_data["room"]
@@ -109,8 +105,9 @@ class RoomManagerI(IceGauntlet.RoomManager):
             raise IceGauntlet.RoomNotExists()
         server_sync_prx = IceGauntlet.RoomManagerSyncPrx.uncheckedCast(self.room_manager_sync_channel_prx.getPublisher())
         server_sync_prx.removedRoom(roomName)
-    
+
     def getRoom(self,room,current=None):
+        '''This method read the room from our directory'''
         map_list=glob.glob(os.path.join('maps','*.json'))
         for i in map_list:
             with open(str(i))as maps_file:
@@ -147,7 +144,6 @@ class RoomManagerSyncI(IceGauntlet.RoomManagerSync):
         listamapas[self.server.id]={}
         if self.server.id != id_server:
             self.server.server_sync_prx.announce(self.server.room_manager_prx, self.server.id)
-            
 
     def announce(self, room_manager_prx, id_server, current=None):
         '''This method is for the event Announce which response a Hello event'''
@@ -156,7 +152,7 @@ class RoomManagerSyncI(IceGauntlet.RoomManagerSync):
         if self.server.id != id_server and id_server not in lista_id:
             print('ANNOUNCE '+id_server+' se presenta ' + self.server.id)
             lista[id_server]= room_manager_prx
-    
+
     def newRoom(self, roomName, id_server, current=None):
         '''This method is for the event newRoom which notify that a new map is received'''
         print('"NEW ROOM" El servidor ' +id_server+ ' ha obtenido el mapa ' +roomName)
@@ -165,7 +161,6 @@ class RoomManagerSyncI(IceGauntlet.RoomManagerSync):
     def removedRoom(self,roomName, current=None):
         '''This method is for the event newRoom which notify that a map is removed'''
         print('"REMOVED ROOM" Se  ha eliminado el mapa: '+ roomName)
-        
 
 class RoomManager(Ice.Application):
     '''Clase server '''
@@ -205,7 +200,6 @@ class RoomManager(Ice.Application):
         self.room_manager_prx = IceGauntlet.RoomManagerPrx.uncheckedCast(proxy)
         servant.room_manager_sync_channel_prx=self.room_manager_sync_channel_prx
         servant.id=self.id
-        
         eventos=RoomManagerSyncI()
         eventos.server=self
         self.server_sync_prx = adapter.addWithUUID(eventos)
